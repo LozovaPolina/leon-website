@@ -1,13 +1,72 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/js/modules/slider.js":
 /*!**********************************!*\
   !*** ./src/js/modules/slider.js ***!
   \**********************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Slider)
+/* harmony export */ });
+class Slider {
+  constructor(page, btns, backBtn) {
+    this.page = document.querySelector(page);
+    this.slides = this.page.querySelectorAll('[data-slide]');
+    this.btns = document.querySelectorAll(btns);
+    this.slideIndex = 1;
+    this.backBtn = document.querySelectorAll(backBtn);
+  }
+  showSlides(n) {
+    if (n > this.slides.length) {
+      this.slideIndex = 1;
+    } else if (n < 1) {
+      this.slideIndex = this.slides.length;
+    }
+    try {
+      this.hanson.style.opacity = '0';
+      if (n === 3) {
+        this.hanson.classList.add("animated");
+        setTimeout(() => {
+          this.hanson.classList.add('fadeInUp');
+        }, 1500);
+      } else {
+        this.hanson.classList.remove('fadeInUp');
+      }
+    } catch (e) {}
+    this.slides.forEach(slide => {
+      slide.style.display = 'none';
+    });
+    this.slides[this.slideIndex - 1].style.display = 'block';
+  }
+  plusSlides(n) {
+    this.showSlides(this.slideIndex += n);
+  }
+  render() {
+    try {
+      this.hanson = document.querySelector('.hanson');
+    } catch (e) {}
+    this.btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.plusSlides(1);
+      });
+    });
+    this.backBtn.forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        if (e.target.parentNode.nodeName == "A" || e.target.parentNode.nodeName == "svg") {
+          this.plusSlides(1);
+          this.slideIndex = 1;
+          this.showSlides(this.slideIndex);
+        }
+      });
+    });
+    this.showSlides(this.slideIndex);
+  }
+}
 
 /***/ })
 
@@ -38,18 +97,6 @@
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -80,18 +127,16 @@
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 /*!************************!*\
   !*** ./src/js/main.js ***!
   \************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider */ "./src/js/modules/slider.js");
-/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_modules_slider__WEBPACK_IMPORTED_MODULE_0__);
 
 window.addEventListener('DOMContentLoaded', () => {
-  const slider = new (_modules_slider__WEBPACK_IMPORTED_MODULE_0___default())('.page', '.next', '[data-logo]');
+  const slider = new _modules_slider__WEBPACK_IMPORTED_MODULE_0__["default"]('.page', '.next', '[data-logo]');
   slider.render();
 });
 })();
