@@ -1,10 +1,8 @@
-export default class Slider {
-    constructor(page, btns, backBtn) {
-        this.page = document.querySelector(page);
-        this.slides = this.page.querySelectorAll('[data-slide]');
-        this.btns = document.querySelectorAll(btns);
-        this.slideIndex = 1;
-        this.backBtn = document.querySelectorAll(backBtn);
+import Slider from "./slider";
+
+export default class MainSlider extends Slider {
+    constructor(container, btns, slides) {
+        super(container, btns, slides);
     }
 
     showSlides(n) {
@@ -23,8 +21,8 @@ export default class Slider {
             } else {
                 this.hanson.classList.remove('fadeInUp')
             }
-        }catch(e){}
-        
+        } catch (e) { }
+
         this.slides.forEach(slide => {
             slide.style.display = 'none'
         });
@@ -34,11 +32,11 @@ export default class Slider {
     plusSlides(n) {
         this.showSlides(this.slideIndex += n);
     }
-    
+
     render() {
         try {
             this.hanson = document.querySelector('.hanson');
-        } catch (e) {}
+        } catch (e) { }
         this.btns.forEach(btn => {
             btn.addEventListener('click', () => {
                 this.plusSlides(1);
@@ -57,6 +55,4 @@ export default class Slider {
 
         this.showSlides(this.slideIndex);
     }
-
-
 }
