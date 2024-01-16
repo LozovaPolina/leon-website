@@ -145,6 +145,27 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
       this.next.click();
     }, 5000);
   }
+  autoplayState() {
+    this.btnListiner = (elem, typeEvent, stateInterval) => {
+      if (elem.length) {
+        elem.forEach(item => {
+          item.addEventListener(typeEvent, () => {
+            stateInterval ? this.autoplaySlides() : clearInterval(this.autoplayId);
+          });
+        });
+      } else {
+        elem.addEventListener(typeEvent, () => {
+          stateInterval ? this.autoplaySlides() : clearInterval(this.autoplayId);
+        });
+      }
+    };
+    this.btnListiner(this.next, 'mouseenter', false);
+    this.btnListiner(this.next, 'mouseleave', true);
+    this.btnListiner(this.prev, 'mouseenter', false);
+    this.btnListiner(this.prev, 'mouseleave', true);
+    this.btnListiner(this.slides, 'mouseenter', false);
+    this.btnListiner(this.slides, 'mouseleave', true);
+  }
   decorizeSlides(i = 0) {
     this.count = i;
     if (this.count == this.slides.length) this.count = 0;
@@ -206,7 +227,10 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.setSlideWidth();
     if (this.activeClass) this.decorizeSlides(this.count);
     this.bindTriggers();
-    if (this.autoplay) this.autoplaySlides();
+    if (this.autoplay) {
+      this.autoplaySlides();
+      this.autoplayState();
+    }
   }
 }
 
