@@ -41,10 +41,12 @@ class Difference {
     });
   }
   init() {
-    this.hideItems(this.oldOfficer, this.items);
-    this.hideItems(this.newOfficer, this.items);
-    this.bindTriggers(this.oldOfficer, this.items);
-    this.bindTriggers(this.newOfficer, this.items);
+    try {
+      this.hideItems(this.oldOfficer, this.items);
+      this.hideItems(this.newOfficer, this.items);
+      this.bindTriggers(this.oldOfficer, this.items);
+      this.bindTriggers(this.newOfficer, this.items);
+    } catch (e) {}
   }
 }
 
@@ -61,10 +63,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Forms)
 /* harmony export */ });
 class Forms {
-  constructor({
-    formSelector,
-    submitButton
-  }) {
+  constructor(formSelector) {
     this.message = {
       loading: 'Загрузка',
       success: 'Спасибо! Скоро мы с Вами свяжемся',
@@ -77,12 +76,18 @@ class Forms {
       question: 'assets/question.php'
     };
     this.forms = document.querySelectorAll(formSelector);
-    this.submitButton = document.querySelectorAll(`${formSelector} ${submitButton}`);
+    this.phoneInput = document.querySelectorAll('[name="phone"]');
   }
   setForm() {
     this.forms.forEach(form => {
+      const formInputs = form.querySelectorAll('input');
+      this.checkInputsState(form, formInputs);
+      formInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          this.checkInputsState(form, formInputs);
+        });
+      });
       form.addEventListener('submit', e => {
-        console.log(e.target);
         e.preventDefault();
         let statusMessege = document.createElement('div');
         statusMessege.classList.add('status');
@@ -92,7 +97,7 @@ class Forms {
           form.style.display = 'none';
         }, 400);
         let statusImg = document.createElement('img');
-        statusImg.setAttribute('src', message.spinner);
+        statusImg.setAttribute('src', this.message.spinner);
         statusImg.classList.add('animated', 'fadeInUp');
         statusMessege.append(statusImg);
         let textMessage = document.createElement('div');
@@ -107,14 +112,13 @@ class Forms {
           statusImg.setAttribute('src', this.message.fail);
           textMessage.textContent = this.message.failure;
         }).finally(() => {
-          form.reset();
+          this.clearInputs(form, formInputs);
           setTimeout(() => {
             statusMessege.remove();
             form.style.display = 'block';
             form.classList.remove('fadeOutUp');
             form.classList.add('fadeInUp');
-            // windowClose();
-          }, 3000);
+          }, 6000);
         });
       });
     });
@@ -126,111 +130,97 @@ class Forms {
     });
     return await res.text();
   }
+  mask() {
+    let setCursorPosition = (pos, elem) => {
+      elem.focus();
+      if (elem.setSelectionRange) {
+        elem.setSelectionRange(pos, pos);
+      } else if (elem.createTextRange) {
+        let range = elem.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', pos);
+        range.moveStart('character', pos);
+        range.select();
+      }
+    };
+    function createMask(event) {
+      let matrix = '+1 (___) ____-___',
+        i = 0,
+        def = matrix.replace(/\D/g, ''),
+        val = this.value.replace(/\D/g, '');
+      if (def.length >= val.length) {
+        val = def;
+      }
+      this.value = matrix.replace(/./g, function (a) {
+        return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? '' : a;
+      });
+      if (event.type === 'blur') {
+        if (this.value.length == 4) {
+          this.value = '';
+        }
+      } else {
+        setCursorPosition(this.value.length, this);
+      }
+    }
+    this.phoneInput.forEach(input => {
+      input.addEventListener('input', createMask);
+      input.addEventListener('focus', createMask);
+      input.addEventListener('blur', createMask);
+      input.addEventListener('keypress', createMask);
+    });
+  }
+  checkMailInputs() {
+    const mailInputs = document.querySelectorAll('[type="email"]');
+    mailInputs.forEach(input => {
+      input.addEventListener('keypress', e => {
+        if (e.key.match(/[^a-z 0-9 @ \.]/ig)) {
+          e.preventDefault();
+        }
+      });
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^a-z 0-9 @ \.]/ig, '');
+      });
+    });
+  }
+  checkInputsState(form, formInput) {
+    const formBtn = form.querySelector('button');
+    const arr = [];
+    formInput.forEach(input => {
+      input.value.trim() !== '' ? arr.push(true) : arr.push(false);
+    });
+    if (arr.some(item => item === false)) {
+      formBtn.setAttribute('disabled', true);
+    } else {
+      formBtn.removeAttribute('disabled');
+    }
+  }
+  checkInputsEmptyWarning() {
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.value.trim() === '') {
+          input.style.border = '1px solid red';
+          input.placeholder = 'please add text';
+        } else {
+          input.placeholder = '';
+          input.style.border = '';
+        }
+      });
+    });
+  }
+  clearInputs(form, formInputs) {
+    formInputs.forEach(item => {
+      item.value = '';
+    });
+    this.checkInputsState(form, formInputs);
+  }
+  init() {
+    this.setForm();
+    this.mask();
+    this.checkMailInputs();
+    this.checkInputsEmptyWarning();
+  }
 }
-
-// function buttonToggleDisable(button, boolean) {
-//     const btn = document.querySelector(button);
-
-//     if (boolean) {
-//         btn.setAttribute('disabled', boolean);
-//     } else {
-//         btn.removeAttribute('disabled');
-//     }
-// }
-
-// const forms = () => {
-
-//     const form = document.querySelectorAll('form'),
-//         inputs = document.querySelectorAll('input'),
-//         upload = document.querySelectorAll('[name="upload"]');
-
-//     const message = {
-//         loading: 'Загрузка',
-//         success: 'Спасибо! Скоро мы с Вами свяжемся',
-//         failure: 'Что-то пошло не так...',
-//         spinner: 'assets/img/spinner.gif',
-//         ok: 'assets/img/ok.png',
-//         fail: 'assets/img/fail.png'
-//     };
-
-//     const path = {
-//         disiner: 'assets/server.php',
-//         question: 'assets/question.php'
-//     };
-
-//     form.forEach(item => {
-
-//         item.addEventListener('submit', (e) => {
-
-//             e.preventDefault();
-
-//             let statusMessege = document.createElement('div');
-//             statusMessege.classList.add('status');
-//             item.parentNode.append(statusMessege);
-//             item.classList.add('animated', 'fadeOutUp');
-
-//             setTimeout(() => {
-//                 item.style.display = 'none';
-//             }, 400);
-
-//             let statusImg = document.createElement('img');
-//             statusImg.setAttribute('src', message.spinner);
-//             statusImg.classList.add('animated', 'fadeInUp');
-//             statusMessege.append(statusImg);
-
-//             let textMessage = document.createElement('div');
-//             textMessage.textContent = message.loading;
-//             statusMessege.append(textMessage);
-
-//             const formData = new FormData(item);
-
-//             let api;
-//             item.closest('.popup-design') || item.matches('.calc_form') ? api = path.disiner : api = path.question;
-//             console.log(api);
-
-//             if (item.matches('.calc_form')) {
-//                 for (let key in calcObj) {
-//                     formData.append(key, calcObj[key])
-//                     delete calcObj[key];
-//                 }
-
-//                 console.log(formData);
-
-//                 document.querySelector('.calc-price').textContent = `
-//                     Для расчета нужно выбрать размер картины и материал картины
-//                 `
-//                 buttonToggleDisable('.calc_form .button-order', true);
-//             }
-
-//             postData(api, formData)
-//                 .then(res => {
-//                     console.log(res);
-//                     statusImg.setAttribute('src', message.ok);
-//                     textMessage.textContent = message.success;
-//                 })
-//                 .catch(() => {
-//                     statusImg.setAttribute('src', message.fail);
-//                     textMessage.textContent = message.failure;
-//                 })
-//                 .finally(() => {
-//                     item.reset();
-//                     setTimeout(() => {
-//                         upload.forEach(item => {
-//                             item.previousElementSibling.textContent = 'Файл не выбран';
-//                         })
-//                         statusMessege.remove();
-//                         item.style.display = 'block';
-//                         item.classList.remove('fadeOutUp');
-//                         item.classList.add('fadeInUp');
-//                         windowClose();
-//                     }, 3000);
-
-//                 });
-//         });
-//     });
-
-//     buttonToggleDisable('.calc_form .button-order', true);
-// };
 
 /***/ }),
 
@@ -332,24 +322,26 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
   render() {
     try {
-      this.hanson = document.querySelector('.hanson');
-    } catch (e) {}
-    this.btns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.plusSlides(1);
-      });
-    });
-    this.backBtn.forEach(item => {
-      item.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.parentNode.nodeName == "A" || e.target.parentNode.nodeName == "svg") {
+      try {
+        this.hanson = document.querySelector('.hanson');
+      } catch (e) {}
+      this.btns.forEach(btn => {
+        btn.addEventListener('click', () => {
           this.plusSlides(1);
-          this.slideIndex = 1;
-          this.showSlides(this.slideIndex);
-        }
+        });
       });
-    });
-    this.showSlides(this.slideIndex);
+      this.backBtn.forEach(item => {
+        item.addEventListener('click', e => {
+          e.preventDefault();
+          if (e.target.parentNode.nodeName == "A" || e.target.parentNode.nodeName == "svg") {
+            this.plusSlides(1);
+            this.slideIndex = 1;
+            this.showSlides(this.slideIndex);
+          }
+        });
+      });
+      this.showSlides(this.slideIndex);
+    } catch (e) {}
   }
 }
 
@@ -452,17 +444,19 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
     });
   }
   init() {
-    this.container.style.cssText = `
+    try {
+      this.container.style.cssText = `
             overflow: hidden;
             display: flex;
         `;
-    this.setSlideWidth();
-    if (this.activeClass) this.decorizeSlides(this.count);
-    this.bindTriggers();
-    if (this.autoplay) {
-      this.autoplaySlides();
-      this.autoplayState();
-    }
+      this.setSlideWidth();
+      if (this.activeClass) this.decorizeSlides(this.count);
+      this.bindTriggers();
+      if (this.autoplay) {
+        this.autoplaySlides();
+        this.autoplayState();
+      }
+    } catch (e) {}
   }
 }
 
@@ -493,7 +487,9 @@ class Slider {
   } = {}) {
     this.container = document.querySelector(container);
     this.inner = document.querySelector(inner);
-    this.slides = this.container.querySelectorAll(slides);
+    try {
+      this.slides = this.container.querySelectorAll(slides);
+    } catch (e) {}
     this.btns = document.querySelectorAll(btns);
     this.slideIndex = 1;
     this.backBtn = document.querySelectorAll(backBtn);
@@ -622,8 +618,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   feedSlider.init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_1__["default"]('.officerold', '.officernew', '.officer__card-item').init();
-  const forms = new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('form', 'form .btn');
-  forms.setForm();
+  new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('.form').init();
 });
 })();
 

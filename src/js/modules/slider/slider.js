@@ -12,7 +12,7 @@ export default class Slider {
     } = {}) {
         this.container = document.querySelector(container);
         this.inner = document.querySelector(inner);
-        this.slides = this.container.querySelectorAll(slides);
+        try {this.slides = this.container.querySelectorAll(slides);} catch(e){}
         this.btns = document.querySelectorAll(btns);
         this.slideIndex = 1;
         this.backBtn = document.querySelectorAll(backBtn);

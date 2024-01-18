@@ -476,6 +476,7 @@ a:active {
     cursor: pointer;
     box-shadow: 0 0 20px rgba(0, 0, 0, .5)
 }
+
 .showup__content-slider .card__controls {
     width: 100%;
     display: flex;
@@ -2059,4 +2060,12 @@ a:active {
     top: auto;
     -webkit-transform: none;
     transform: none
+}
+
+.status {
+    text-align: center;
+    display: inline-block;
+    font-size: 1.5625rem;
+    font-weight: 900;
+    color: #2546bc;
 }

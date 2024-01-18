@@ -28,9 +28,11 @@ export default class Difference {
         });
     }
     init() {
-        this.hideItems(this.oldOfficer, this.items);
-        this.hideItems(this.newOfficer, this.items);
-        this.bindTriggers(this.oldOfficer, this.items);
-        this.bindTriggers(this.newOfficer, this.items);
+        try {
+            this.hideItems(this.oldOfficer, this.items);
+            this.hideItems(this.newOfficer, this.items);
+            this.bindTriggers(this.oldOfficer, this.items);
+            this.bindTriggers(this.newOfficer, this.items);
+        }catch(e){}   
     }
 }
