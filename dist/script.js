@@ -50,6 +50,190 @@ class Difference {
 
 /***/ }),
 
+/***/ "./src/js/modules/forms.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/forms.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Forms)
+/* harmony export */ });
+class Forms {
+  constructor({
+    formSelector,
+    submitButton
+  }) {
+    this.message = {
+      loading: 'Загрузка',
+      success: 'Спасибо! Скоро мы с Вами свяжемся',
+      failure: 'Что-то пошло не так...',
+      spinner: 'assets/img/spinner.gif',
+      ok: 'assets/img/ok.png',
+      fail: 'assets/img/fail.png'
+    };
+    this.path = {
+      question: 'assets/question.php'
+    };
+    this.forms = document.querySelectorAll(formSelector);
+    this.submitButton = document.querySelectorAll(`${formSelector} ${submitButton}`);
+  }
+  setForm() {
+    this.forms.forEach(form => {
+      form.addEventListener('submit', e => {
+        console.log(e.target);
+        e.preventDefault();
+        let statusMessege = document.createElement('div');
+        statusMessege.classList.add('status');
+        form.parentNode.append(statusMessege);
+        form.classList.add('animated', 'fadeOutUp');
+        setTimeout(() => {
+          form.style.display = 'none';
+        }, 400);
+        let statusImg = document.createElement('img');
+        statusImg.setAttribute('src', message.spinner);
+        statusImg.classList.add('animated', 'fadeInUp');
+        statusMessege.append(statusImg);
+        let textMessage = document.createElement('div');
+        textMessage.textContent = this.message.loading;
+        statusMessege.append(textMessage);
+        const formData = new FormData(form);
+        this.postData(this.path.question, formData).then(res => {
+          console.log(res);
+          statusImg.setAttribute('src', this.message.ok);
+          textMessage.textContent = this.message.success;
+        }).catch(() => {
+          statusImg.setAttribute('src', this.message.fail);
+          textMessage.textContent = this.message.failure;
+        }).finally(() => {
+          form.reset();
+          setTimeout(() => {
+            statusMessege.remove();
+            form.style.display = 'block';
+            form.classList.remove('fadeOutUp');
+            form.classList.add('fadeInUp');
+            // windowClose();
+          }, 3000);
+        });
+      });
+    });
+  }
+  async postData(url, data) {
+    let res = await fetch(url, {
+      method: 'POST',
+      body: data
+    });
+    return await res.text();
+  }
+}
+
+// function buttonToggleDisable(button, boolean) {
+//     const btn = document.querySelector(button);
+
+//     if (boolean) {
+//         btn.setAttribute('disabled', boolean);
+//     } else {
+//         btn.removeAttribute('disabled');
+//     }
+// }
+
+// const forms = () => {
+
+//     const form = document.querySelectorAll('form'),
+//         inputs = document.querySelectorAll('input'),
+//         upload = document.querySelectorAll('[name="upload"]');
+
+//     const message = {
+//         loading: 'Загрузка',
+//         success: 'Спасибо! Скоро мы с Вами свяжемся',
+//         failure: 'Что-то пошло не так...',
+//         spinner: 'assets/img/spinner.gif',
+//         ok: 'assets/img/ok.png',
+//         fail: 'assets/img/fail.png'
+//     };
+
+//     const path = {
+//         disiner: 'assets/server.php',
+//         question: 'assets/question.php'
+//     };
+
+//     form.forEach(item => {
+
+//         item.addEventListener('submit', (e) => {
+
+//             e.preventDefault();
+
+//             let statusMessege = document.createElement('div');
+//             statusMessege.classList.add('status');
+//             item.parentNode.append(statusMessege);
+//             item.classList.add('animated', 'fadeOutUp');
+
+//             setTimeout(() => {
+//                 item.style.display = 'none';
+//             }, 400);
+
+//             let statusImg = document.createElement('img');
+//             statusImg.setAttribute('src', message.spinner);
+//             statusImg.classList.add('animated', 'fadeInUp');
+//             statusMessege.append(statusImg);
+
+//             let textMessage = document.createElement('div');
+//             textMessage.textContent = message.loading;
+//             statusMessege.append(textMessage);
+
+//             const formData = new FormData(item);
+
+//             let api;
+//             item.closest('.popup-design') || item.matches('.calc_form') ? api = path.disiner : api = path.question;
+//             console.log(api);
+
+//             if (item.matches('.calc_form')) {
+//                 for (let key in calcObj) {
+//                     formData.append(key, calcObj[key])
+//                     delete calcObj[key];
+//                 }
+
+//                 console.log(formData);
+
+//                 document.querySelector('.calc-price').textContent = `
+//                     Для расчета нужно выбрать размер картины и материал картины
+//                 `
+//                 buttonToggleDisable('.calc_form .button-order', true);
+//             }
+
+//             postData(api, formData)
+//                 .then(res => {
+//                     console.log(res);
+//                     statusImg.setAttribute('src', message.ok);
+//                     textMessage.textContent = message.success;
+//                 })
+//                 .catch(() => {
+//                     statusImg.setAttribute('src', message.fail);
+//                     textMessage.textContent = message.failure;
+//                 })
+//                 .finally(() => {
+//                     item.reset();
+//                     setTimeout(() => {
+//                         upload.forEach(item => {
+//                             item.previousElementSibling.textContent = 'Файл не выбран';
+//                         })
+//                         statusMessege.remove();
+//                         item.style.display = 'block';
+//                         item.classList.remove('fadeOutUp');
+//                         item.classList.add('fadeInUp');
+//                         windowClose();
+//                     }, 3000);
+
+//                 });
+//         });
+//     });
+
+//     buttonToggleDisable('.calc_form .button-order', true);
+// };
+
+/***/ }),
+
 /***/ "./src/js/modules/playVideo.js":
 /*!*************************************!*\
   !*** ./src/js/modules/playVideo.js ***!
@@ -391,6 +575,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_difference__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/difference */ "./src/js/modules/difference.js");
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
 /* harmony import */ var _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/slider/slider-mini */ "./src/js/modules/slider/slider-mini.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
+
 
 
 
@@ -436,6 +622,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   feedSlider.init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_1__["default"]('.officerold', '.officernew', '.officer__card-item').init();
+  const forms = new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('form', 'form .btn');
+  forms.setForm();
 });
 })();
 
