@@ -18,6 +18,15 @@ window.addEventListener('DOMContentLoaded', () => {
         slides: '[data-slide]'
     });
     slider.render();
+    const modulePage = new MainSlider({
+        container: '.moduleapp',
+        btns: '.next',
+        backBtn: '[data-logo]',
+        slides: '.module',
+        prevPage: '.prevmodule',
+        nextPage: '.nextmodule'
+    });
+    modulePage.render();
     const showUpSlider = new MiniSlider({
         inner: '.showup__content-inner',
         container: '.showup__content-slider',

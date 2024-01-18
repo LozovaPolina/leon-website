@@ -8,7 +8,9 @@ export default class Slider {
         prev = null,
         activeClass = null,
         animate = false,
-        autoplay = false
+        autoplay = false,
+        prevPage = null,
+        nextPage = null
     } = {}) {
         this.container = document.querySelector(container);
         this.inner = document.querySelector(inner);
@@ -18,6 +20,8 @@ export default class Slider {
         this.backBtn = document.querySelectorAll(backBtn);
         this.prev = document.querySelector(prev);
         this.next = document.querySelector(next);
+        this.prevPage = document.querySelectorAll(prevPage);
+        this.nextPage = document.querySelectorAll(nextPage);
         this.offset = 0;
         this.activeClass = activeClass;
         this.animate = animate;
