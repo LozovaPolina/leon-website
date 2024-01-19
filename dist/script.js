@@ -52,6 +52,43 @@ class Difference {
 
 /***/ }),
 
+/***/ "./src/js/modules/downloud.js":
+/*!************************************!*\
+  !*** ./src/js/modules/downloud.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Download)
+/* harmony export */ });
+class Download {
+  constructor(triggers) {
+    this.btns = document.querySelectorAll(triggers);
+    this.path = 'assets/img/mainbg.jpg';
+  }
+  downloadItem(path) {
+    const element = document.createElement('a');
+    element.setAttribute('href', path);
+    element.setAttribute('download', 'nice_picture');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+  init() {
+    this.btns.forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.downloadItem(this.path);
+      });
+    });
+  }
+}
+
+/***/ }),
+
 /***/ "./src/js/modules/forms.js":
 /*!*********************************!*\
   !*** ./src/js/modules/forms.js ***!
@@ -317,6 +354,45 @@ class VideoPlayer {
 
 /***/ }),
 
+/***/ "./src/js/modules/showInfo.js":
+/*!************************************!*\
+  !*** ./src/js/modules/showInfo.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ShowInfo)
+/* harmony export */ });
+class ShowInfo {
+  constructor(btn) {
+    this.showBtn = document.querySelectorAll(btn);
+  }
+  init() {
+    this.showBtn.forEach(item => {
+      item.addEventListener('click', e => {
+        const target = e.target;
+        if (target.matches('.plus') || target.matches('.plus__content') || target.matches('.plus__content svg') || target.matches('.plus__content svg path')) {
+          const itemSibling = item.nextElementSibling;
+          if (itemSibling.style.display !== 'block') {
+            itemSibling.classList.add('animated', 'fadeIn');
+            itemSibling.classList.remove('fadeOut');
+            itemSibling.style.display = 'block';
+          } else {
+            itemSibling.classList.remove('fadeIn');
+            itemSibling.classList.add('fadeOut');
+            itemSibling.style.display = 'none';
+          }
+        }
+      });
+    });
+  }
+}
+
+//module__info-show
+
+/***/ }),
+
 /***/ "./src/js/modules/slider/slider-main.js":
 /*!**********************************************!*\
   !*** ./src/js/modules/slider/slider-main.js ***!
@@ -478,7 +554,6 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
       if (this.offset >= this.width * (this.slides.length - 1)) {
         this.offset = 0;
       } else {
-        data - logo;
         this.offset += this.width + 20;
       }
       this.inner.style.transform = `translateX(-${this.offset}px)`;
@@ -631,6 +706,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
 /* harmony import */ var _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/slider/slider-mini */ "./src/js/modules/slider/slider-mini.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
+/* harmony import */ var _modules_showInfo__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/showInfo */ "./src/js/modules/showInfo.js");
+/* harmony import */ var _modules_downloud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/downloud */ "./src/js/modules/downloud.js");
+
+
 
 
 
@@ -687,6 +766,8 @@ window.addEventListener('DOMContentLoaded', () => {
   feedSlider.init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_1__["default"]('.officerold', '.officernew', '.officer__card-item').init();
   new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('.form').init();
+  new _modules_showInfo__WEBPACK_IMPORTED_MODULE_5__["default"]('.module__info-show').init();
+  new _modules_downloud__WEBPACK_IMPORTED_MODULE_6__["default"]('.download').init();
 });
 })();
 

@@ -66,7 +66,7 @@ export default class MiniSlider extends Slider {
             this.count += 1;
             if (this.offset >= this.width * (this.slides.length - 1)) {
                 this.offset = 0;
-            } else {data-logo
+            } else {
                 this.offset += this.width + 20;
             }
             this.inner.style.transform = `translateX(-${this.offset}px)`;

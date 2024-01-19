@@ -4,6 +4,8 @@ import Difference from "./modules/difference";
 import MainSlider from "./modules/slider/slider-main";
 import MiniSlider from "./modules/slider/slider-mini";
 import Forms from "./modules/forms";
+import ShowInfo from "./modules/showInfo";
+import Downloud from "./modules/downloud";
 
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -58,4 +60,6 @@ window.addEventListener('DOMContentLoaded', () => {
     feedSlider.init();
     new Difference('.officerold', '.officernew', '.officer__card-item').init();
     new Forms('.form').init();
+    new ShowInfo('.module__info-show').init();
+    new Downloud('.download').init()
 });
